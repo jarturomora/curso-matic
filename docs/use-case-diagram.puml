@@ -1,0 +1,22 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #EEF
+  BorderColor black
+}
+
+actor User
+
+package "curso-matic CLI" {
+    usecase "Text translation (EN ➝ ES)" as UC1
+    usecase "Markdown to AsciiDoc converter" as UC2
+    usecase "Broken links search" as UC3
+    usecase "Course publication in LMS (OpenEdX, Udemy...)" as UC4
+}
+
+User -- UC1
+User -- UC2
+User -- UC3
+User -- UC4
+@enduml
