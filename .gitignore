@@ -1,6 +1,9 @@
 ### PlantUML ###
 out/*
 
+### Configuration files ###
+.env
+
 ### Linux ###
 *~
 
