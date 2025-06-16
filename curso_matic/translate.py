@@ -66,27 +66,22 @@ def restore_code_blocks(text: str, placeholders: list[tuple[str, str]]) -> str:
         text = text.replace(placeholder, block)
     return text
 
-
-def filter_excluded_lines(text: str, exclusion_keywords: set) -> str:
+def mask_excluded_keywords(text: str, exclusion_keywords: set) -> str:
     """
-    Retain lines with excluded keywords to prevent translation.
+    Replace each excluded keyword in the text with a masked version [[[KEYWORD]]]
+    to prevent it from being translated by ChatGPT.
 
     Args:
-        text (str): Markdown text
-        exclusion_keywords (set): Keywords to exclude
+        text (str): Input text
+        exclusion_keywords (set): Set of words to preserve
 
     Returns:
-        str: Filtered text
+        str: Masked text
     """
-    lines = text.splitlines()
-    filtered_lines = []
-    for line in lines:
-        if any(keyword in line for keyword in exclusion_keywords):
-            filtered_lines.append(line)  # Leave as-is
-        else:
-            filtered_lines.append(line)
-    return "\n".join(filtered_lines)
-
+    for word in exclusion_keywords:
+        # Only replace whole words using word boundaries
+        text = re.sub(rf"\b({re.escape(word)})\b", r"[[[\1]]]", text)
+    return text
 
 def translate_with_openai(content: str) -> str:
     """
@@ -110,7 +105,8 @@ def translate_with_openai(content: str) -> str:
                 "content": (
                     "You are a professional translator. "
                     "Translate the following Markdown content from English to Spanish. "
-                    "Do not translate Markdown code blocks or lines containing excluded keywords."
+                    "Do not translate Markdown code blocks. "
+                    "Do not translate any content wrapped in [[[ and ]]] — those are protected keywords."
                 ),
             },
             {
@@ -122,6 +118,9 @@ def translate_with_openai(content: str) -> str:
     )
     return response.choices[0].message["content"]
 
+# Unmask keywords after translation
+def unmask_keywords(text: str) -> str:
+    return re.sub(r"\[\[\[(.*?)\]\]\]", r"\1", text)
 
 @app.command()
 def file(
@@ -141,14 +140,19 @@ def file(
     # Remove and store code blocks before translation
     text_no_code, placeholders = extract_code_blocks(text)
 
-    # Exclude lines with keywords from translation
-    filtered_text = filter_excluded_lines(text_no_code, exclusion_keywords)
+    # Mask excluded keywords so they are not translated
+    masked_text = mask_excluded_keywords(text_no_code, exclusion_keywords)
 
     typer.echo("🌍 Sending text to ChatGPT for translation...")
-    translated_text = translate_with_openai(filtered_text)
+    translated_text = translate_with_openai(masked_textt)
 
+    
+    typer.echo("🔄 Restoring code blocks and unmasking keywords...")
     # Restore code blocks in the translated text
     final_text = restore_code_blocks(translated_text, placeholders)
+    # Unmask excluded keywords in the final text    
+    final_text = unmask_keywords(final_text)
+
 
     # Determine output file name
     out_path = output or f"{Path(path).stem}.es.md"
