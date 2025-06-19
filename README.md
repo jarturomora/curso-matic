@@ -14,3 +14,44 @@
 The following diagram summarizes the main features of `curso-matic` from the user's perspective:
 
 ![Use Case Diagram](img/use-case-diagram.png)
+
+## 🔧 Installation
+
+1. Clone the repository:
+
+    ```bash
+    git clone https://github.com/jarturomora/curso-matic.git
+    cd curso-matic
+    ```
+
+2. (Optional) Create a virtual environment:
+
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    ```
+
+3. Install dependencies and the app in editable mode:
+
+    ```bash
+    pip install -r requirements.txt
+    pip install -e .
+    ```
+
+4. Create a `.env` file with your OpenAI API key:
+
+    ```env
+    OPENAI_API_KEY=your-api-key-here
+    ```
+
+## 🚀 Usage: Translate a Markdown file
+
+To translate a file from English to Spanish, preserving code blocks and specific keywords:
+
+```bash
+curso-matic translate file lesson1.md --exclude words.txt --output lesson1.es.md
+```
+
+* `lesson1.md`: your input file in English.
+* `--exclude words.txt`: a list of keywords to preserve during translation.
+* `--output lesson1.es.md`: (optional) the output file name.
