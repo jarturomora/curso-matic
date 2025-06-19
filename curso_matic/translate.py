@@ -98,7 +98,7 @@ def translate_with_openai(content: str) -> str:
         raise RuntimeError("OPENAI_API_KEY is missing. Please define it in a .env file or export it.")
 
     response = openai.ChatCompletion.create(
-        model="gpt-4",  # You can change to "gpt-3.5-turbo" for cost-saving
+        model="gpt-3.5-turbo",  # You can change to "gpt-3.5-turbo" for cost-saving
         messages=[
             {
                 "role": "system",
@@ -144,7 +144,7 @@ def file(
     masked_text = mask_excluded_keywords(text_no_code, exclusion_keywords)
 
     typer.echo("🌍 Sending text to ChatGPT for translation...")
-    translated_text = translate_with_openai(masked_textt)
+    translated_text = translate_with_openai(masked_text)
 
     
     typer.echo("🔄 Restoring code blocks and unmasking keywords...")
