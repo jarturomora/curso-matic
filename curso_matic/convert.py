@@ -53,11 +53,13 @@ def md_to_asciidoc(src: str) -> str:
         adoc = "=" * i + r" \1"
         out = re.sub(md, adoc, out, flags=re.MULTILINE)
 
-    # 3️⃣ bold **text**  or __text__
-    out = re.sub(r"(\*\*|__)(.+?)\1", r"*\\2*", out)
-
-    # 4️⃣ italic *text*  or _text_
-    out = re.sub(r"(\*|_)([^ *_].+?)\1", r"_\\2_", out)
+    # 3️⃣ italic *text* / _text_  →  _text_
+    out = re.sub(r"(?<!\*)\*(?!\*)([^*\n]+?)\*(?!\*)", r"_\1_", out)  # *italic*
+    out = re.sub(r"(?<!_)_(?!_)([^_\n]+?)_(?!_)",r"_\1_", out)  # _italic_
+    
+    # 4️⃣ bold **text**  / __text__  →  *text*
+    out = re.sub(r"\*\*(.+?)\*\*", r"*\1*", out)   # **bold**
+    out = re.sub(r"__(.+?)__",     r"*\1*", out)   # __bold__
 
     # 5️⃣ inline code  `code`
     out = re.sub(r"`([^`]+?)`", r"+\\1+", out)
@@ -68,11 +70,29 @@ def md_to_asciidoc(src: str) -> str:
     # 7️⃣ links  [text](url)
     out = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r"link:\2[\1]", out)
 
-    # 8️⃣ unordered list items
+    # 7️⃣ unordered list items  (-, *, +)  ➞  * item
     out = re.sub(r"^\s*([-*+])\s+(.*)$", r"* \2", out, flags=re.MULTILINE)
 
-    # 9️⃣ ordered list items
+    # 8️⃣ ordered list items  (1. 2. …)   ➞  . item
     out = re.sub(r"^\s*\d+\.\s+(.*)$", r". \1", out, flags=re.MULTILINE)
+
+    # 9️⃣ ensure a BLANK line **BEFORE** every list item
+    #    If the previous character is *not* a newline, insert an extra newline.
+    #    (Prevents “paragraph* item” cases.)
+    out = re.sub(
+        r"([^\n])\n([*\.]\s+)",       # single newline before a list marker
+        r"\1\n\n\2",                  # add another newline
+        out
+    )
+
+    # 🔟 ensure a BLANK line **AFTER** every list item
+    out = re.sub(
+        r"^([*\.]\s+.+?)\n(?!\n)",    # list line followed by only ONE newline
+        r"\1\n\n",                    # add another newline
+        out,
+        flags=re.MULTILINE,
+    )
+
 
     # Blockquotes, tables, etc. can be added later if needed
     return out
