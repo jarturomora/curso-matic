@@ -4,6 +4,9 @@ out/*
 ### Configuration files ###
 .env
 
+### Temporary files ###
+mc/*
+
 ### Linux ###
 *~
 
