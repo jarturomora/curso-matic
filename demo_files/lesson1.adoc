@@ -1,0 +1,78 @@
+= Lesson 1: Introduction to the +\1+ Statement in Python
+
+The +\1+ statement is used to execute a block of code only if a certain condition is true.
+
+== Basic Syntax
+
+The syntax of an +\1+ statement in Python is:
+
+[source,python]
+----
+if condition:
+    # code to execute if condition is true
+----
+
+For example:
+
+[source,python]
+----
+age = 18
+if age >= 18:
+    print("You are an adult.")
+----
+
+== Using +\1+
+
+You can also use an +\1+ clause to run a block of code when the condition is false:
+
+[source,python]
+----
+age = 16
+if age >= 18:
+    print("You are an adult.")
+else:
+    print("You are a minor.")
+----
+
+== Using +\1+
+
+When you need to check multiple conditions, use +\1+ (short for "else if"):
+
+[source,python]
+----
+score = 85
+
+if score >= 90:
+    print("Grade: A")
+elif score >= 80:
+    print("Grade: B")
+else:
+    print("Keep studying!")
+----
+
+== Indentation Matters
+
+Python relies on indentation (spacing) to define code blocks. Make sure you use consistent indentation, typically 4 spaces.
+
+Incorrect example:
+
+[source,python]
+----
+if True:
+print("This will cause an error")
+----
+
+Correct example:
+
+[source,python]
+----
+if True:
+    print("This is properly indented")
+----
+
+== Summary
+* Use +\1+ to check conditions.
+* Combine with +\1+ or +\1+ for more complex logic.
+* Always pay attention to indentation in Python!
+
+Happy coding!

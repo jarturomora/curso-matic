@@ -1,5 +1,5 @@
 import typer
-from curso_matic import translate  # Import the translation module
+from curso_matic import translate, convert  # Import modules
 
 # Create the main CLI app
 app = typer.Typer(
@@ -12,6 +12,13 @@ app.add_typer(
     translate.app,
     name="translate",
     help="Translate Markdown files from English to Spanish using the ChatGPT API."
+)
+
+# Add the 'convert' command group from convert.py
+app.add_typer(
+    convert.app,
+    name="convert",
+    help="Convert Markdown files to AsciiDoc format."
 )
 
 # Entry point for CLI

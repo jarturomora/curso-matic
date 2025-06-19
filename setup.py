@@ -11,8 +11,6 @@ setup(
         "typer[all]",
         "openai==0.28",
         "python-dotenv",
-        "markdown",
-        "html2text",
         "pathlib"
     ],
     entry_points={
